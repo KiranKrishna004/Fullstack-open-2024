@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Display } from "./components/Display";
-import { Form } from "./components/Form";
+import { Persons } from "./components/Persons";
+import { PersonForm } from "./components/PersonForm";
 import { Filter } from "./components/Filter";
 
 const App = () => {
@@ -19,13 +19,17 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Filter filter={filter} setFilter={setFilter} />
-      <Form
+      <h3>Add a new</h3>
+      <PersonForm
         newName={newName}
         newNumber={newNumber}
         setNewName={setNewName}
         setNewNumber={setNewNumber}
+        setPersons={setPersons}
+        persons={persons}
       />
-      <Display persons={persons} filter={filter} />
+      <h3>Numbers</h3>
+      <Persons persons={persons} filter={filter} />
     </div>
   );
 };
