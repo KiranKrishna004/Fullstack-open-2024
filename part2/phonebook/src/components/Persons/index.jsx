@@ -4,7 +4,7 @@ export const Persons = ({ filter, persons }) =>
       person.name.toLowerCase().includes(filter.toLowerCase())
     )
     .map((person) => (
-      <p key={person.name}>
+      <p key={person.id}>
         {person.name} {person.number}
       </p>
     ));
