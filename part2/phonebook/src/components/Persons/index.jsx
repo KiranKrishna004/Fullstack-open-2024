@@ -1,16 +1,17 @@
 import personService from "../../services";
 
 export const Persons = ({ filter, persons, setPersons }) => {
-  const handleDelete = (id) => {
-    personService
-      .deleteObj(id)
-      .then(() =>
-        personService
-          .getAll()
-          .then((res) => setPersons(res.data))
-          .catch((e) => console.log(e))
-      )
-      .catch((e) => console.log(e));
+  const handleDelete = (person) => {
+    window.confirm(`Delete ${person.name}`) &&
+      personService
+        .deleteObj(person.id)
+        .then(() =>
+          personService
+            .getAll()
+            .then((res) => setPersons(res.data))
+            .catch((e) => console.log(e))
+        )
+        .catch((e) => console.log(e));
   };
 
   return persons
@@ -20,7 +21,7 @@ export const Persons = ({ filter, persons, setPersons }) => {
     .map((person) => (
       <div key={person.id}>
         {person.name} {person.number}
-        <button onClick={() => handleDelete(person.id)}>delete</button>
+        <button onClick={() => handleDelete(person)}>delete</button>
       </div>
     ));
 };

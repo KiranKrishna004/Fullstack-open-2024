@@ -10,19 +10,33 @@ export const PersonForm = ({
 }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
-    persons.find((person) => person.name === newName)
-      ? alert(`${newName} is already added to phonebook`)
-      : personService
-          .create({
-            name: newName,
-            number: newNumber,
-          })
+    const person = persons.find((person) => person.name === newName);
+    person
+      ? window.confirm(
+          `${newName} is already added to phonebook, replace the old number with a new one? `
+        ) &&
+        personService
+          .update(person.id, { ...person, number: newNumber })
           .then(() =>
             personService
               .getAll()
               .then((res) => setPersons(res.data))
               .catch((e) => console.log(e))
           )
+          .catch((e) => console.log(e))
+      : personService
+          .create({
+            name: newName,
+            number: newNumber,
+          })
+          .then(() => {
+            personService
+              .getAll()
+              .then((res) => setPersons(res.data))
+              .catch((e) => console.log(e));
+            setNewName("");
+            setNewNumber("");
+          })
           .catch((e) => console.log(e));
   };
 
