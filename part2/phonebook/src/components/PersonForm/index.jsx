@@ -1,3 +1,5 @@
+import personService from "../../services";
+
 export const PersonForm = ({
   newName,
   newNumber,
@@ -10,7 +12,18 @@ export const PersonForm = ({
     e.preventDefault();
     persons.find((person) => person.name === newName)
       ? alert(`${newName} is already added to phonebook`)
-      : setPersons([...persons, { name: newName, number: newNumber }]);
+      : personService
+          .create({
+            name: newName,
+            number: newNumber,
+          })
+          .then(() =>
+            personService
+              .getAll()
+              .then((res) => setPersons(res.data))
+              .catch((e) => console.log(e))
+          )
+          .catch((e) => console.log(e));
   };
 
   return (
