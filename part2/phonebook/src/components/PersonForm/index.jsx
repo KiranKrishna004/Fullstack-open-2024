@@ -7,6 +7,8 @@ export const PersonForm = ({
   setNewNumber,
   setPersons,
   persons,
+  setMessage,
+  setStyle,
 }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -21,9 +23,15 @@ export const PersonForm = ({
             personService
               .getAll()
               .then((res) => setPersons(res.data))
-              .catch((e) => console.log(e))
+              .catch(() => {
+                setMessage("Get Failed");
+                setStyle("error");
+              })
           )
-          .catch((e) => console.log(e))
+          .catch((e) => {
+            setMessage(`Failed updating ${person.name}`);
+            setStyle("error");
+          })
       : personService
           .create({
             name: newName,
@@ -33,11 +41,19 @@ export const PersonForm = ({
             personService
               .getAll()
               .then((res) => setPersons(res.data))
-              .catch((e) => console.log(e));
+              .catch(() => {
+                setMessage("Get Failed");
+                setStyle("error");
+              });
             setNewName("");
             setNewNumber("");
+            setMessage(`Added ${newName}`);
+            setStyle("success");
           })
-          .catch((e) => console.log(e));
+          .catch(() => {
+            setMessage(`Failed Adding ${newName}`);
+            setStyle("error");
+          });
   };
 
   return (

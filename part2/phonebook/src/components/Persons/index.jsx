@@ -1,17 +1,33 @@
 import personService from "../../services";
 
-export const Persons = ({ filter, persons, setPersons }) => {
+export const Persons = ({
+  filter,
+  persons,
+  setPersons,
+  setMessage,
+  setStyle,
+}) => {
   const handleDelete = (person) => {
     window.confirm(`Delete ${person.name}`) &&
       personService
         .deleteObj(person.id)
-        .then(() =>
+        .then(() => {
           personService
             .getAll()
             .then((res) => setPersons(res.data))
-            .catch((e) => console.log(e))
-        )
-        .catch((e) => console.log(e));
+            .catch(() => {
+              setMessage("Get Failed");
+              setStyle("error");
+            });
+          setMessage(`Deleted ${person.name}`);
+          setStyle("success");
+        })
+        .catch(() => {
+          setMessage(
+            `Information of ${person.name} has already been removed from server`
+          );
+          setStyle("error");
+        });
   };
 
   return persons
