@@ -1,12 +1,19 @@
 import axios from "axios";
+import { apiKey } from "../config";
 
 const baseUrl = "https://studies.cs.helsinki.fi/restcountries/api";
+
+const weatherBaseUrl = "https://api.openweathermap.org/data/2.5/weather";
 
 const getAll = () => {
   return axios.get(`${baseUrl}/all`);
 };
 const getByName = (name) => {
   return axios.get(`${baseUrl}/name/${name}`);
+};
+
+const getWeatherByLoc = (lat, long) => {
+  return axios.get(`${weatherBaseUrl}?lat=${lat}&lon=${long}&appid=${apiKey}`);
 };
 
 const create = (newObject) => {
@@ -27,4 +34,5 @@ export default {
   deleteObj: deleteObj,
   update: update,
   getByName: getByName,
+  getWeatherByLoc: getWeatherByLoc,
 };
