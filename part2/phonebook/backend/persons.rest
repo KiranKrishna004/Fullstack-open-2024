@@ -17,3 +17,12 @@ Content-Type: application/json
     "name":"Arto Hellsdas",
     "number":"040-1243456"
 }
+
+###
+PUT http://localhost:3001/api/persons/66b4f747b4955a7c91ea8772
+Content-Type: application/json
+
+{
+    "name":"Arto dvfjsdvfjhsdjhf",
+    "number":"040-1243456"
+}
