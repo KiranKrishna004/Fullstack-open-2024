@@ -28,8 +28,8 @@ export const PersonForm = ({
                 setStyle("error");
               })
           )
-          .catch((e) => {
-            setMessage(`Failed updating ${person.name}`);
+          .catch((error) => {
+            setMessage(error.response.data.error);
             setStyle("error");
           })
       : personService
@@ -50,8 +50,8 @@ export const PersonForm = ({
             setMessage(`Added ${newName}`);
             setStyle("success");
           })
-          .catch(() => {
-            setMessage(`Failed Adding ${newName}`);
+          .catch((error) => {
+            setMessage(error.response.data.error);
             setStyle("error");
           });
   };
