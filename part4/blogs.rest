@@ -10,3 +10,6 @@ Content-Type: application/json
   "url": "https",
   "likes": 10
 }
+
+###
+DELETE http://localhost:3003/api/blogs/66c39fc1ba7caaa2ebe7ad8d
