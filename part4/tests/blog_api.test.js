@@ -4,14 +4,53 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const helper = require('./test_helper')
+const bcrypt = require('bcryptjs')
 
 const api = supertest(app)
 
 describe('when there is initially some notes saved', () => {
   beforeEach(async () => {
+    await User.deleteMany({})
+
+    const passwordHash = await bcrypt.hash('password', 10)
+    const user = new User({
+      _id: '5a422a851b54a676234d17f1',
+      username: 'root',
+      name: 'KiranKrishnaN',
+      blogs: [],
+      passwordHash,
+      __v: 0,
+    })
+
+    await user.save()
+  })
+
+  beforeEach(async () => {
     await Blog.deleteMany({})
-    await Blog.insertMany(helper.initialBlog)
+
+    const users = await User.find({})
+    const user = users[0]
+    const id = users[0].id
+
+    const blogObject = helper.initialBlog.map(
+      (blog) =>
+        new Blog({
+          _id: blog._id,
+          title: blog.title,
+          author: blog.author,
+          url: blog.url,
+          userId: id.toString(),
+          likes: blog.likes ?? 0,
+        })
+    )
+    const promiseArray = blogObject.map((blog) => {
+      blog.save()
+      user.blogs = user.blogs.concat(blog.id)
+    })
+    await Promise.all(promiseArray)
+    await user.save()
   })
 
   test('blogs are returned as json', async () => {
@@ -38,11 +77,12 @@ describe('when there is initially some notes saved', () => {
   describe('when adding new blog', async () => {
     test('blog add creates a new blog post', async () => {
       const newBlog = {
-        _id: '5a422bc61b54a676234d17fd',
+        _id: '5a422aa71b54a676234d17f7',
         title: 'Type wars',
         author: 'Kiran Krishna N',
         url: 'http://blog.cleancoder.com/uncle-bob/2',
         likes: 2,
+        userId: '5a422a851b54a676234d17f1',
         __v: 0,
       }
 
@@ -55,10 +95,11 @@ describe('when there is initially some notes saved', () => {
 
     test('blog likes missing should add 0 as default', async () => {
       const newBlog = {
-        _id: '5a422bc61b54a676234d17fd',
+        _id: '5a422aa71b54a676234d17f7',
         title: 'Type wars',
         author: 'Kiran Krishna N',
         url: 'http://blog.cleancoder.com/uncle-bob/2',
+        userId: '5a422a851b54a676234d17f1',
         __v: 0,
       }
       const response = await api.post('/api/blogs/').send(newBlog).expect(201)
@@ -68,9 +109,10 @@ describe('when there is initially some notes saved', () => {
 
     test('blogs without url or title throws 400', async () => {
       const newBlog = {
-        _id: '5a422bc61b54a676234d17fd',
+        _id: '5a422aa71b54a676234d17f7',
         author: 'Kiran Krishna N',
         likes: 2,
+        userId: '5a422a851b54a676234d17f1',
         __v: 0,
       }
 
@@ -101,17 +143,20 @@ describe('when there is initially some notes saved', () => {
 
   describe('when updating a blog', async () => {
     test('test if it updates the blog', async () => {
-      const beforeContent = helper.findBloginDb('5a422a851b54a676234d17f7')
+      const beforeContent = helper.findBloginDb('5a422aa71b54a676234d17f8')
 
-      await api.put('/api/blogs/5a422a851b54a676234d17f7').expect(200)
+      await api
+        .put('/api/blogs/5a422aa71b54a676234d17f8')
+        .send({ title: 'sjkhdkjasd' })
+        .expect(200)
 
-      const afterContent = await helper.findBloginDb('5a422a851b54a676234d17f7')
+      const afterContent = await helper.findBloginDb('5a422aa71b54a676234d17f8')
 
       assert.notDeepStrictEqual(beforeContent, afterContent)
     })
 
     test('test if length of blogs remain the same', async () => {
-      await api.put('/api/blogs/5a422a851b54a676234d17f7').expect(200)
+      await api.put('/api/blogs/5a422aa71b54a676234d17f8').expect(200)
 
       const content = await helper.blogsInDb()
 

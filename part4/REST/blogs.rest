@@ -1,0 +1,27 @@
+GET http://localhost:3003/api/blogs
+
+###
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY2YzRkMzM2MjUwMzUyMmJiMzg2ZTIwMiIsImlhdCI6MTcyNDE4NTkxMX0.zrSAC0sxWn59FjUitlJ2oU9fngG2NiGNVisYOOuJ7f0
+
+{
+  "_id": "5a422bc61b54a676234d17fd",
+  "title": "Type wars",
+  "author": "Kiran Krishna N",
+  "url": "http://blog.cleancoder.com/uncle-bob/2",
+  "likes": 2,
+  "userId": "66c4d3362503522bb386e202",
+  "__v": 0
+}
+
+###
+DELETE http://localhost:3003/api/blogs/5a422bc61b54a676234d17fd
+
+###
+PUT http://localhost:3003/api/blogs/66c4f4a576fff98554232eb6
+Content-Type: application/json
+
+{
+  "title": "Type sajhdgasjhd"
+}
