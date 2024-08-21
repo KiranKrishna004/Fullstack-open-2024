@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import { BlogForm } from './components/BlogForm'
+import { Togglable } from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -9,13 +11,15 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+  const blogFormRef = useRef()
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
+    getandSetBlogs()
   }, [])
+
+  const getandSetBlogs = () => {
+    blogService.getAll().then((blogs) => setBlogs(blogs))
+  }
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('user')
@@ -79,55 +83,50 @@ const App = () => {
     )
   }
 
-  const handleCreateBlog = async (event) => {
-    event.preventDefault()
-    try {
-      await blogService.create({ url, title, author })
-      setMessage(`a new blog ${title} by ${author} added`)
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
-    } catch (e) {
-      setMessage('Failed Creating Blog')
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
-    }
+  const handleCreateBlog = (blogObj) => {
+    blogFormRef.current.toggleVisibility()
+    blogService
+      .create(blogObj)
+      .then(() => {
+        setMessage(`a new blog ${blogObj.title} by ${blogObj.author} added`)
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+        getandSetBlogs()
+      })
+      .catch((e) => {
+        setMessage('Failed Creating Blog')
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+      })
   }
 
-  const CreateBlogForm = () => {
-    return (
-      <form onSubmit={handleCreateBlog}>
-        <div>
-          title:{' '}
-          <input
-            type="text"
-            value={title}
-            name="Title"
-            onChange={({ target }) => setTitle(target.value)}
-          />
-        </div>
-        <div>
-          author:{' '}
-          <input
-            type="text"
-            value={author}
-            name="Author"
-            onChange={({ target }) => setAuthor(target.value)}
-          />
-        </div>
-        <div>
-          url:{' '}
-          <input
-            type="text"
-            value={url}
-            name="url"
-            onChange={({ target }) => setUrl(target.value)}
-          />
-        </div>
-        <button type="submit">create</button>
-      </form>
+  const handleLike = async (blog) => {
+    const blogId = blog.id
+    const newObj = {
+      user: blog.user.id,
+      likes: blog.likes + 1,
+      author: blog.author,
+      title: blog.title,
+      url: blog.url,
+    }
+    const updatedBlog = await blogService.updateBlog(blogId, newObj)
+
+    setBlogs(
+      blogs.map((blog) =>
+        blog.id === updatedBlog.id
+          ? { ...blog, likes: updatedBlog.likes }
+          : blog
+      )
     )
+  }
+
+  const handleRemove = async (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      await blogService.removeBlog(blog.id)
+      getandSetBlogs()
+    }
   }
 
   if (!user) {
@@ -146,11 +145,19 @@ const App = () => {
       {message}
       <p>{user.username} is logged in</p>{' '}
       <button onClick={handleLogout}>logout</button>
-      <h2>Create new</h2>
-      {CreateBlogForm()}
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
-      ))}
+      <Togglable buttonLabel="new blog" ref={blogFormRef}>
+        <BlogForm handleCreateBlog={handleCreateBlog} />
+      </Togglable>
+      {blogs
+        .sort((a, b) => a.likes - b.likes)
+        .map((blog) => (
+          <Blog
+            key={blog.id}
+            blog={blog}
+            handleLike={handleLike}
+            handleRemove={handleRemove}
+          />
+        ))}
     </div>
   )
 }
