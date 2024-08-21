@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import blogService from '../services/blogs'
+import PropTypes from 'prop-types'
 
 const Blog = ({ blog, handleLike, handleRemove }) => {
   const [isView, setIsView] = useState(false)
@@ -12,17 +12,12 @@ const Blog = ({ blog, handleLike, handleRemove }) => {
     marginBottom: 5,
   }
 
-  const handleUpdate = (blog) => {
-    const blogId = blog.id
-    const newObj = {
-      user: blog.user.id,
-      likes: blog.likes + 1,
-      author: blog.author,
-      title: blog.title,
-      url: blog.url,
-    }
-    blogService.updateBlog(blogId, newObj)
+  Blog.propTypes = {
+    blog: PropTypes.object.isRequired,
+    handleLike: PropTypes.func.isRequired,
+    handleRemove: PropTypes.func.isRequired,
   }
+
   return (
     <div style={blogStyle}>
       {blog.title} {blog.author}{' '}
