@@ -10,7 +10,7 @@ const bcrypt = require('bcryptjs')
 
 const api = supertest(app)
 
-describe('when there is initially some notes saved', () => {
+describe('when there is initially some blogs saved', () => {
   beforeEach(async () => {
     await User.deleteMany({})
 
@@ -20,7 +20,7 @@ describe('when there is initially some notes saved', () => {
       username: 'root',
       name: 'KiranKrishnaN',
       blogs: [],
-      passwordHash,
+      passwordHash: passwordHash,
       __v: 0,
     })
 
@@ -41,7 +41,7 @@ describe('when there is initially some notes saved', () => {
           title: blog.title,
           author: blog.author,
           url: blog.url,
-          userId: id.toString(),
+          user: id.toString(),
           likes: blog.likes ?? 0,
         })
     )
@@ -75,9 +75,21 @@ describe('when there is initially some notes saved', () => {
   })
 
   describe('when adding new blog', async () => {
+    let header
+    beforeEach(async () => {
+      const user = {
+        username: 'root',
+        password: 'password',
+      }
+
+      const loginUser = await api.post('/api/login').send(user)
+
+      header = {
+        Authorization: `Bearer ${loginUser.body.token}`,
+      }
+    })
     test('blog add creates a new blog post', async () => {
       const newBlog = {
-        _id: '5a422aa71b54a676234d17f7',
         title: 'Type wars',
         author: 'Kiran Krishna N',
         url: 'http://blog.cleancoder.com/uncle-bob/2',
@@ -86,43 +98,63 @@ describe('when there is initially some notes saved', () => {
         __v: 0,
       }
 
-      await api.post('/api/blogs/').send(newBlog).expect(201)
+      await api.post('/api/blogs/').set(header).send(newBlog).expect(201)
 
-      const response = await api.get('/api/blogs/')
+      const content = await helper.blogsInDb()
 
-      assert.strictEqual(response.body.length, helper.initialBlog.length + 1)
+      assert.strictEqual(content.length, helper.initialBlog.length + 1)
     })
 
     test('blog likes missing should add 0 as default', async () => {
       const newBlog = {
-        _id: '5a422aa71b54a676234d17f7',
         title: 'Type wars',
         author: 'Kiran Krishna N',
         url: 'http://blog.cleancoder.com/uncle-bob/2',
         userId: '5a422a851b54a676234d17f1',
         __v: 0,
       }
-      const response = await api.post('/api/blogs/').send(newBlog).expect(201)
+
+      const response = await api
+        .post('/api/blogs/')
+        .send(newBlog)
+        .set(header)
+        .expect(201)
 
       assert.strictEqual(response.body.likes, 0)
     })
 
     test('blogs without url or title throws 400', async () => {
       const newBlog = {
-        _id: '5a422aa71b54a676234d17f7',
         author: 'Kiran Krishna N',
         likes: 2,
         userId: '5a422a851b54a676234d17f1',
         __v: 0,
       }
 
-      await api.post('/api/blogs/').send(newBlog).expect(400)
+      await api.post('/api/blogs/').send(newBlog).set(header).expect(400)
     })
   })
 
   describe('when deleting a blog', async () => {
+    let header
+    beforeEach(async () => {
+      const user = {
+        username: 'root',
+        password: 'password',
+      }
+
+      const loginUser = await api.post('/api/login').send(user)
+
+      header = {
+        Authorization: `Bearer ${loginUser.body.token}`,
+      }
+    })
+
     test('Check if blog is deleted by length', async () => {
-      await api.delete('/api/blogs/5a422a851b54a676234d17f7').expect(200)
+      await api
+        .delete('/api/blogs/5a422a851b54a676234d17f7')
+        .set(header)
+        .expect(200)
 
       const content = await helper.blogsInDb()
 
@@ -132,6 +164,7 @@ describe('when there is initially some notes saved', () => {
     test('Check if blog is deleted by search', async () => {
       const response = await api
         .delete('/api/blogs/5a422a851b54a676234d17f7')
+        .set(header)
         .expect(200)
 
       const content = await helper.blogsInDb()
