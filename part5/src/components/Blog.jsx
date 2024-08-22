@@ -4,6 +4,8 @@ import PropTypes from 'prop-types'
 const Blog = ({ blog, handleLike, handleRemove }) => {
   const [isView, setIsView] = useState(false)
 
+  const showWhenVisible = { display: isView ? '' : 'none' }
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -24,18 +26,18 @@ const Blog = ({ blog, handleLike, handleRemove }) => {
       <button onClick={() => setIsView(!isView)}>
         {isView ? 'hide' : 'view'}
       </button>
-      {isView && (
+      <div className="isViewContent" style={showWhenVisible}>
+        <p>{blog.url}</p>
         <div>
-          <p>{blog.url}</p>
-          <div>
-            Likes: {blog.likes}
-            {'  '}
-            <button onClick={() => handleLike(blog)}>like</button>
-          </div>
-          <p>{blog.user.name}</p>
-          <button onClick={() => handleRemove(blog)}>remove</button>
+          Likes: {blog.likes}
+          {'  '}
+          <button onClick={() => handleLike(blog)} id="like-button">
+            like
+          </button>
         </div>
-      )}
+        <p>{blog.user.name}</p>
+        <button onClick={() => handleRemove(blog)}>remove</button>
+      </div>
     </div>
   )
 }
