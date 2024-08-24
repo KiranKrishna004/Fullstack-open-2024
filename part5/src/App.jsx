@@ -1,14 +1,13 @@
 import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
-import loginService from './services/login'
 import { BlogForm } from './components/BlogForm'
 import { Togglable } from './components/Togglable'
+import LoginForm from './components/LoginForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [userName, setUserName] = useState('')
-  const [password, setPassword] = useState('')
+
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
   const blogFormRef = useRef()
@@ -30,57 +29,10 @@ const App = () => {
     }
   }, [])
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-
-    try {
-      const user = await loginService.login({
-        username: userName,
-        password,
-      })
-      window.localStorage.setItem('user', JSON.stringify(user))
-      blogService.setToken(user.token)
-      setUser(user)
-      setUserName('')
-      setPassword('')
-    } catch (e) {
-      setMessage('Wrong credentials')
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
-    }
-  }
-
   const handleLogout = () => {
     window.localStorage.removeItem('user')
     blogService.setToken(null)
     setUser(null)
-  }
-
-  const LoginForm = () => {
-    return (
-      <form onSubmit={handleLogin}>
-        <div>
-          username:{' '}
-          <input
-            type="text"
-            value={userName}
-            name="Username"
-            onChange={({ target }) => setUserName(target.value)}
-          />
-        </div>
-        <div>
-          password:{' '}
-          <input
-            type="password"
-            value={password}
-            name="Password"
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </div>
-        <button type="submit">login</button>
-      </form>
-    )
   }
 
   const handleCreateBlog = (blogObj) => {
@@ -124,8 +76,15 @@ const App = () => {
 
   const handleRemove = async (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      await blogService.removeBlog(blog.id)
-      getandSetBlogs()
+      try {
+        await blogService.removeBlog(blog.id)
+        getandSetBlogs()
+      } catch (e) {
+        setMessage('You cannot delete this blog')
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+      }
     }
   }
 
@@ -134,7 +93,7 @@ const App = () => {
       <>
         {message}
         <h2>Log in to Application</h2>
-        {LoginForm()}
+        <LoginForm setUser={setUser} setMessage={setMessage} />
       </>
     )
   }
@@ -148,16 +107,18 @@ const App = () => {
       <Togglable buttonLabel="new blog" ref={blogFormRef}>
         <BlogForm handleCreateBlog={handleCreateBlog} />
       </Togglable>
-      {blogs
-        .sort((a, b) => a.likes - b.likes)
-        .map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            handleLike={handleLike}
-            handleRemove={handleRemove}
-          />
-        ))}
+      <div data-testid="blog-listings">
+        {blogs
+          .sort((a, b) => b.likes - a.likes)
+          .map((blog) => (
+            <Blog
+              key={blog.id}
+              blog={blog}
+              handleLike={handleLike}
+              handleRemove={handleRemove}
+            />
+          ))}
+      </div>
     </div>
   )
 }

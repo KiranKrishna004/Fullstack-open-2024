@@ -22,14 +22,16 @@ const Blog = ({ blog, handleLike, handleRemove }) => {
 
   return (
     <div style={blogStyle}>
-      {blog.title} {blog.author}{' '}
+      <span data-testid="blogItem">
+        {blog.title} {blog.author}{' '}
+      </span>
       <button onClick={() => setIsView(!isView)}>
         {isView ? 'hide' : 'view'}
       </button>
       <div className="isViewContent" style={showWhenVisible}>
         <p>{blog.url}</p>
         <div>
-          Likes: {blog.likes}
+          <p data-testid="likes">Likes: {blog.likes}</p>
           {'  '}
           <button onClick={() => handleLike(blog)} id="like-button">
             like

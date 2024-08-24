@@ -28,6 +28,7 @@ export const BlogForm = ({ handleCreateBlog }) => {
           name="Title"
           onChange={({ target }) => setTitle(target.value)}
           placeholder="Enter Blog Title"
+          data-testid="title-input"
           id="title-input"
         />
       </div>
@@ -39,6 +40,7 @@ export const BlogForm = ({ handleCreateBlog }) => {
           name="Author"
           onChange={({ target }) => setAuthor(target.value)}
           placeholder="Enter Blog Author"
+          data-testid="author-input"
           id="author-input"
         />
       </div>
@@ -50,6 +52,7 @@ export const BlogForm = ({ handleCreateBlog }) => {
           name="url"
           onChange={({ target }) => setUrl(target.value)}
           placeholder="Enter Blog Url"
+          data-testid="url-input"
           id="url-input"
         />
       </div>

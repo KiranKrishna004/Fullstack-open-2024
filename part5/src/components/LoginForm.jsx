@@ -2,7 +2,7 @@ import { useState } from 'react'
 import loginService from '../services/login'
 import blogService from '../services/blogs'
 
-export const LoginForm = ({ setMessage, setUser }) => {
+const LoginForm = ({ setUser, setMessage }) => {
   const [userName, setUserName] = useState('')
   const [password, setPassword] = useState('')
 
@@ -34,6 +34,7 @@ export const LoginForm = ({ setMessage, setUser }) => {
         <input
           type="text"
           value={userName}
+          data-testid="username"
           name="Username"
           onChange={({ target }) => setUserName(target.value)}
         />
@@ -43,6 +44,7 @@ export const LoginForm = ({ setMessage, setUser }) => {
         <input
           type="password"
           value={password}
+          data-testid="password"
           name="Password"
           onChange={({ target }) => setPassword(target.value)}
         />
@@ -51,3 +53,4 @@ export const LoginForm = ({ setMessage, setUser }) => {
     </form>
   )
 }
+export default LoginForm
