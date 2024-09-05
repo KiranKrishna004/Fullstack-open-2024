@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import AnecdoteService from '../service/anecdotes'
-import { resetNotification, setNotifications } from './notificationReducer'
+import { setNotifications } from './notificationReducer'
 
 const initialState = []
 
