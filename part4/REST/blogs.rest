@@ -24,3 +24,12 @@ Content-Type: application/json
 {
   "title": "Type sajhdgasjhd"
 }
+
+
+###
+POST http://localhost:3003/api/blogs/66dddaf9828e4ccaedc8ae9e/comments
+Content-Type: application/json
+
+{
+  "comment":"hello there"
+}
