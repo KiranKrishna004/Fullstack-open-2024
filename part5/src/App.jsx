@@ -12,6 +12,7 @@ import {
 } from './reducers/blogReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { notificationSetter } from './reducers/notificationReducer'
+import { userCredGetter, userCredResetter } from './reducers/loginReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -20,9 +21,10 @@ const App = () => {
     return [...state.blogs].sort((a, b) => b.likes - a.likes)
   })
 
+  const user = useSelector((state) => state.user)
+
   const message = useSelector((state) => state.notification)
 
-  const [user, setUser] = useState(null)
   const blogFormRef = useRef()
 
   useEffect(() => {
@@ -30,18 +32,11 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('user')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
-    }
+    dispatch(userCredGetter())
   }, [])
 
   const handleLogout = () => {
-    window.localStorage.removeItem('user')
-    blogService.setToken(null)
-    setUser(null)
+    dispatch(userCredResetter())
   }
 
   const handleCreateBlog = (blogObj) => {
@@ -71,7 +66,7 @@ const App = () => {
       <>
         {message}
         <h2>Log in to Application</h2>
-        <LoginForm setUser={setUser} />
+        <LoginForm />
       </>
     )
   }
