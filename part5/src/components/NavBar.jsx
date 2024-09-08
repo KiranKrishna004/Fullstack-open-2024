@@ -1,6 +1,8 @@
+import { Flex, Button, Text } from '@mantine/core'
 import { Link } from 'react-router-dom'
 import { userCredResetter } from '../reducers/loginReducer'
 import { useDispatch } from 'react-redux'
+
 export const Navbar = ({ auth }) => {
   const dispatch = useDispatch()
   const handleLogout = () => {
@@ -8,18 +10,23 @@ export const Navbar = ({ auth }) => {
   }
 
   return (
-    <div
+    <Flex
+      justify={'space-between'}
+      align="baseline"
+      px={20}
       style={{
-        display: 'flex',
-        alignItems: 'baseline',
-        gap: 10,
-        backgroundColor: 'grey',
+        boxShadow: '0 4px 2px -2px gray',
       }}
+      py={20}
     >
-      <Link to="/">blogs</Link>
-      <Link to="/users">users</Link>
-      <p>{auth.username} is logged in</p>
-      <button onClick={handleLogout}>logout</button>
-    </div>
+      <Flex gap={5} align={'baseline'}>
+        <Link to="/">Blogs</Link>
+        <Link to="/users">Users</Link>
+      </Flex>
+      <Flex gap={10} align={'baseline'}>
+        <Text>{auth.username} is logged in</Text>
+        <Button onClick={handleLogout}>logout</Button>
+      </Flex>
+    </Flex>
   )
 }

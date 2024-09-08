@@ -1,3 +1,4 @@
+import { Button, Flex } from '@mantine/core'
 import { useState, forwardRef, useImperativeHandle } from 'react'
 import PropTypes from 'prop-types'
 
@@ -22,15 +23,17 @@ export const Togglable = forwardRef((props, refs) => {
   }
 
   return (
-    <div>
-      <div style={hideWhenVisible}>
-        <button onClick={toggleVisibility}>{props.buttonLabel}</button>
-      </div>
-      <div style={showWhenVisible}>
+    <Flex>
+      <Flex style={hideWhenVisible}>
+        <Button onClick={toggleVisibility}>{props.buttonLabel}</Button>
+      </Flex>
+      <Flex direction={'column'} style={showWhenVisible} gap={10}>
         {props.children}
-        <button onClick={toggleVisibility}>cancel</button>
-      </div>
-    </div>
+        <Button onClick={toggleVisibility} bg="red">
+          cancel
+        </Button>
+      </Flex>
+    </Flex>
   )
 })
 Togglable.displayName = 'Togglable'

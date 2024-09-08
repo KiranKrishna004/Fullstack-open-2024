@@ -1,3 +1,4 @@
+import { TextInput, Button, Flex } from '@mantine/core'
 import { useState } from 'react'
 import PropTypes from 'prop-types'
 
@@ -20,9 +21,9 @@ export const BlogForm = ({ handleCreateBlog }) => {
 
   return (
     <form onSubmit={addBlog}>
-      <div>
-        title:{' '}
-        <input
+      <Flex direction={'column'} align={'center'} w="100%" gap={10}>
+        <TextInput
+          label="Title"
           type="text"
           value={title}
           name="Title"
@@ -31,10 +32,8 @@ export const BlogForm = ({ handleCreateBlog }) => {
           data-testid="title-input"
           id="title-input"
         />
-      </div>
-      <div>
-        author:{' '}
-        <input
+        <TextInput
+          label="Author"
           type="text"
           value={author}
           name="Author"
@@ -43,10 +42,8 @@ export const BlogForm = ({ handleCreateBlog }) => {
           data-testid="author-input"
           id="author-input"
         />
-      </div>
-      <div>
-        url:{' '}
-        <input
+        <TextInput
+          label="Url"
           type="text"
           value={url}
           name="url"
@@ -55,8 +52,10 @@ export const BlogForm = ({ handleCreateBlog }) => {
           data-testid="url-input"
           id="url-input"
         />
-      </div>
-      <button type="submit">create</button>
+        <Button type="submit" w="100%">
+          create
+        </Button>
+      </Flex>
     </form>
   )
 }

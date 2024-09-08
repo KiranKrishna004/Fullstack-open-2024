@@ -1,9 +1,10 @@
+import { Flex } from '@mantine/core'
 import { useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import Blog from '../components/Blog'
 import { BlogForm } from '../components/BlogForm'
 import { Togglable } from '../components/Togglable'
-import { addBlogs, deleteBlogs, likeBlogs } from '../reducers/blogReducer'
+import { addBlogs, deleteBlogs } from '../reducers/blogReducer'
 import { notificationSetter } from '../reducers/notificationReducer'
 
 export const LandingPage = ({ blogs }) => {
@@ -37,11 +38,11 @@ export const LandingPage = ({ blogs }) => {
       <Togglable buttonLabel="new blog" ref={blogFormRef}>
         <BlogForm handleCreateBlog={handleCreateBlog} />
       </Togglable>
-      <div data-testid="blog-listings">
+      <Flex data-testid="blog-listings" pt={50} direction={'column'}>
         {blogs.map((blog) => (
           <Blog key={blog.id} blog={blog} handleRemove={handleRemove} />
         ))}
-      </div>
+      </Flex>
     </>
   )
 }

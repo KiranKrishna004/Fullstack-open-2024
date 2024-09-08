@@ -13,6 +13,8 @@
     "playtest:report": "playwright show-report"
   },
   "dependencies": {
+    "@mantine/core": "^7.12.2",
+    "@mantine/hooks": "^7.12.2",
     "@reduxjs/toolkit": "^2.2.7",
     "axios": "^1.4.0",
     "prop-types": "^15.8.1",

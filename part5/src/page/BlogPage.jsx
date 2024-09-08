@@ -1,3 +1,5 @@
+import { Flex, Button, Text, TextInput, List } from '@mantine/core'
+
 import { useField } from '../hooks/useField'
 import { addComments, likeBlogs } from '../reducers/blogReducer'
 import { notificationSetter } from '../reducers/notificationReducer'
@@ -18,29 +20,38 @@ export const BlogPage = ({ blog }) => {
     return <></>
   }
   return (
-    <div>
+    <Flex direction={'column'}>
       <h2>{blog.title}</h2>
       <a href={blog.url} target="_blank" rel="noreferrer">
         {blog.url}
       </a>
-      <p data-testid="likes">Likes: {blog.likes}</p>
-      {'  '}
-      <button onClick={() => handleLike(blog)} id="like-button">
-        like
-      </button>
-      <p>Added By {blog.user.name}</p>
+      <Flex align={'baseline'} gap={10}>
+        <p data-testid="likes">Likes: {blog.likes}</p>
+        <Button size="xs" onClick={() => handleLike(blog)} id="like-button">
+          like
+        </Button>
+      </Flex>
+      <Text>
+        Added By{' '}
+        <Text span fw={700} c="white">
+          {blog.user.name}
+        </Text>
+      </Text>
+      <Flex pt={50}>
+        <form onSubmit={handleAddComment}>
+          <TextInput size="xs" label="Comment" {...comment} />
+          <Button size="xs" mt={10} type="submit">
+            add comment
+          </Button>
+        </form>
+      </Flex>
 
       <h3>comments</h3>
-      <form onSubmit={handleAddComment}>
-        comment: <input {...comment} />
-        <button>add comment</button>
-      </form>
-
-      <ul>
+      <List withPadding>
         {blog.comments.map((comment) => (
-          <li key={comment}>{comment}</li>
+          <List.Item key={comment}>{comment}</List.Item>
         ))}
-      </ul>
-    </div>
+      </List>
+    </Flex>
   )
 }

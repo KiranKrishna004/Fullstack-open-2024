@@ -1,20 +1,8 @@
-import { useState } from 'react'
+import { Flex, Text } from '@mantine/core'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
-const Blog = ({ blog, handleRemove }) => {
-  const [isView, setIsView] = useState(false)
-
-  const showWhenVisible = { display: isView ? '' : 'none' }
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  }
-
+const Blog = ({ blog }) => {
   Blog.propTypes = {
     blog: PropTypes.object.isRequired,
     handleLike: PropTypes.func.isRequired,
@@ -22,13 +10,13 @@ const Blog = ({ blog, handleRemove }) => {
   }
 
   return (
-    <div style={blogStyle}>
-      <span data-testid="blogItem">
+    <Flex>
+      <Text>
         <Link to={`/blogs/${blog.id}`}>
           {blog.title} {blog.author}{' '}
         </Link>
-      </span>
-    </div>
+      </Text>
+    </Flex>
   )
 }
 
