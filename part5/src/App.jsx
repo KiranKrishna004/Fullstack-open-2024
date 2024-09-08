@@ -11,6 +11,7 @@ import {
   likeBlogs,
 } from './reducers/blogReducer'
 import { useDispatch, useSelector } from 'react-redux'
+import { notificationSetter } from './reducers/notificationReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -19,8 +20,9 @@ const App = () => {
     return [...state.blogs].sort((a, b) => b.likes - a.likes)
   })
 
+  const message = useSelector((state) => state.notification)
+
   const [user, setUser] = useState(null)
-  const [message, setMessage] = useState(null)
   const blogFormRef = useRef()
 
   useEffect(() => {
@@ -45,21 +47,21 @@ const App = () => {
   const handleCreateBlog = (blogObj) => {
     blogFormRef.current.toggleVisibility()
     dispatch(addBlogs(blogObj))
+    dispatch(notificationSetter(`added ${blogObj.title}`))
   }
 
   const handleLike = (blog) => {
     dispatch(likeBlogs(blog))
+    dispatch(notificationSetter(`liked ${blog.title}`))
   }
 
   const handleRemove = async (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       try {
         dispatch(deleteBlogs(blog.id))
+        dispatch(notificationSetter(`deleted blog: ${blog.id}`))
       } catch (e) {
-        setMessage('You cannot delete this blog')
-        setTimeout(() => {
-          setMessage(null)
-        }, 5000)
+        dispatch(notificationSetter('You cannot delete this blog'))
       }
     }
   }
@@ -69,7 +71,7 @@ const App = () => {
       <>
         {message}
         <h2>Log in to Application</h2>
-        <LoginForm setUser={setUser} setMessage={setMessage} />
+        <LoginForm setUser={setUser} />
       </>
     )
   }
@@ -78,7 +80,7 @@ const App = () => {
     <div>
       <h2>blogs</h2>
       {message}
-      <p>{user.username} is logged in</p>{' '}
+      <p>{user.username} is logged in</p>
       <button onClick={handleLogout}>logout</button>
       <Togglable buttonLabel="new blog" ref={blogFormRef}>
         <BlogForm handleCreateBlog={handleCreateBlog} />
