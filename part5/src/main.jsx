@@ -6,18 +6,21 @@ import { Provider } from 'react-redux'
 import notificationReducer from './reducers/notificationReducer'
 import loginReducer from './reducers/loginReducer'
 import usersReducer from './reducers/usersReducer'
+import { BrowserRouter as Router } from 'react-router-dom'
 
 const store = configureStore({
   reducer: {
     blogs: blogReducer,
     notification: notificationReducer,
-    user: loginReducer,
+    auth: loginReducer,
     users: usersReducer,
   },
 })
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>
-    <App />
+    <Router>
+      <App />
+    </Router>
   </Provider>
 )

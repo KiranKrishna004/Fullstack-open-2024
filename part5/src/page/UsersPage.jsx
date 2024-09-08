@@ -1,17 +1,6 @@
-import axios from 'axios'
-import { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { userSetter } from '../reducers/usersReducer'
+import { Link } from 'react-router-dom'
 
-export const UsersPage = () => {
-  const dispatch = useDispatch()
-  const users = useSelector((state) => state.users)
-
-  console.log(users)
-  useEffect(() => {
-    dispatch(userSetter())
-  }, [])
-
+export const UsersPage = ({ users }) => {
   return (
     <div>
       <h2>Users</h2>
@@ -23,9 +12,11 @@ export const UsersPage = () => {
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
+          {users?.map((user) => (
             <tr key={user.id}>
-              <td>{user.name}</td>
+              <td>
+                <Link to={`/users/${user.id}`}>{user.name}</Link>
+              </td>
               <td>{user.blogs.length}</td>
             </tr>
           ))}

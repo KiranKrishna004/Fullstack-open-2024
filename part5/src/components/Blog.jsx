@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
-const Blog = ({ blog, handleLike, handleRemove }) => {
+const Blog = ({ blog, handleRemove }) => {
   const [isView, setIsView] = useState(false)
 
   const showWhenVisible = { display: isView ? '' : 'none' }
@@ -23,9 +24,11 @@ const Blog = ({ blog, handleLike, handleRemove }) => {
   return (
     <div style={blogStyle}>
       <span data-testid="blogItem">
-        {blog.title} {blog.author}{' '}
+        <Link to={`/blogs/${blog.id}`}>
+          {blog.title} {blog.author}{' '}
+        </Link>
       </span>
-      <button onClick={() => setIsView(!isView)}>
+      {/* <button onClick={() => setIsView(!isView)}>
         {isView ? 'hide' : 'view'}
       </button>
       <div className="isViewContent" style={showWhenVisible}>
@@ -39,7 +42,7 @@ const Blog = ({ blog, handleLike, handleRemove }) => {
         </div>
         <p>{blog.user.name}</p>
         <button onClick={() => handleRemove(blog)}>remove</button>
-      </div>
+      </div> */}
     </div>
   )
 }

@@ -6,7 +6,7 @@ import { notificationSetter } from './notificationReducer'
 const initialState = null
 
 const loginSlice = createSlice({
-  name: 'user',
+  name: 'auth',
   initialState,
   reducers: {
     setCreds(state, action) {
