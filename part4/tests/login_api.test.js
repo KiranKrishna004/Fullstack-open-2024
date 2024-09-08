@@ -8,7 +8,7 @@ describe('when login', () => {
   test('test if login works', async () => {
     await api
       .post('/api/login')
-      .send({ username: 'root', password: 'password' })
+      .send({ username: 'root', password: 'salainen' })
       .expect(200)
   })
 })

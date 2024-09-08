@@ -1,6 +1,5 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import Blog from './components/Blog'
-import blogService from './services/blogs'
 import { BlogForm } from './components/BlogForm'
 import { Togglable } from './components/Togglable'
 import LoginForm from './components/LoginForm'
@@ -42,7 +41,11 @@ const App = () => {
   const handleCreateBlog = (blogObj) => {
     blogFormRef.current.toggleVisibility()
     dispatch(addBlogs(blogObj))
-    dispatch(notificationSetter(`added ${blogObj.title}`))
+    dispatch(
+      notificationSetter(
+        `a new blog ${blogObj.title} by ${blogObj.author} added`
+      )
+    )
   }
 
   const handleLike = (blog) => {
@@ -70,7 +73,7 @@ const App = () => {
       </>
     )
   }
-
+  console.log(user)
   return (
     <div>
       <h2>blogs</h2>

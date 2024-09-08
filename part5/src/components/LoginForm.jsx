@@ -11,18 +11,14 @@ const LoginForm = () => {
   const handleLogin = async (event) => {
     event.preventDefault()
 
-    try {
-      dispatch(
-        userCredSetter({
-          username: userName,
-          password,
-        })
-      )
-      setUserName('')
-      setPassword('')
-    } catch (e) {
-      dispatch(notificationSetter('wrong credentials'))
-    }
+    dispatch(
+      userCredSetter({
+        username: userName,
+        password,
+      })
+    )
+    setUserName('')
+    setPassword('')
   }
 
   return (

@@ -3,7 +3,7 @@ const User = require('../models/user')
 
 const initialUser = [
   {
-    _id: '5a422a851b54a676234d17f1',
+    _id: '5a422a851b54a676234d17f8',
     username: 'root',
     name: 'Superuser',
     password: 'salainen',

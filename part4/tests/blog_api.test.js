@@ -13,6 +13,7 @@ const api = supertest(app)
 describe('when there is initially some blogs saved', () => {
   beforeEach(async () => {
     await User.deleteMany({})
+    await Blog.deleteMany({})
 
     const passwordHash = await bcrypt.hash('password', 10)
     const user = new User({
@@ -25,14 +26,8 @@ describe('when there is initially some blogs saved', () => {
     })
 
     await user.save()
-  })
 
-  beforeEach(async () => {
-    await Blog.deleteMany({})
-
-    const users = await User.find({})
-    const user = users[0]
-    const id = users[0].id
+    const id = user.id
 
     const blogObject = helper.initialBlog.map(
       (blog) =>
@@ -50,8 +45,11 @@ describe('when there is initially some blogs saved', () => {
       user.blogs = user.blogs.concat(blog.id)
     })
     await Promise.all(promiseArray)
+
     await user.save()
   })
+
+  // beforeEach(async () => {})
 
   test('blogs are returned as json', async () => {
     await api

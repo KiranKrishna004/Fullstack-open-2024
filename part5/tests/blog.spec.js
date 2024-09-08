@@ -84,7 +84,7 @@ describe('Blog app', () => {
 
       test('a blog cannot be deleted by another user', async ({ page }) => {
         await page.getByRole('button', { name: 'logout' }).click()
-        await loginWith(page, 'root1', 'password2')
+        await loginWith(page, 'root5', 'password2')
 
         const selectedBlog = page.getByText('Test Title1 Test Author1')
         await deleteBlog(page, selectedBlog)
