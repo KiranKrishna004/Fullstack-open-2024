@@ -5,7 +5,7 @@ import { notificationSetter } from './notificationReducer'
 
 const initialState = null
 
-const userSlice = createSlice({
+const loginSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
@@ -18,8 +18,8 @@ const userSlice = createSlice({
   },
 })
 
-export default userSlice.reducer
-export const { setCreds, resetCreds } = userSlice.actions
+export default loginSlice.reducer
+export const { setCreds, resetCreds } = loginSlice.actions
 
 export const userCredSetter = (creds) => {
   return async (dispatch) => {
