@@ -199,15 +199,27 @@ const resolvers = {
     authorCount: async () => Author.collection.countDocuments(),
     allBooks: async (root, args) => {
       try {
-        const books = await Book.find({
-          genres: args.genre,
-        }).populate({
-          path: 'author',
-          match: { name: args.author }, // Filter by author's name
-        })
+        let query = {}
 
-        const filteredBooks = books.filter((book) => book.author !== null)
-        return filteredBooks
+        if (args.genre) {
+          query.genres = { $in: [args.genre] }
+        }
+
+        if (args.author) {
+          const author = await Author.findOne({ name: args.author })
+          if (!author) {
+            throw new GraphQLError('Author not found', {
+              extensions: {
+                code: 'BAD_USER_INPUT',
+                invalidArgs: { author: args.author },
+              },
+            })
+          }
+          query.author = author._id
+        }
+
+        const books = await Book.find(query).populate('author')
+        return books
       } catch (e) {
         throw new GraphQLError('Failed finding books', {
           extensions: {
@@ -217,18 +229,14 @@ const resolvers = {
           },
         })
       }
-      // return books.filter((book) => {
-      //   const matchesAuthor = !args.author || book.author === args.author
-      //   const matchesGenre = !args.genre || book.genres.includes(args.genre)
-      //   return matchesAuthor && matchesGenre
-      // })
     },
     allAuthors: async () => Author.find({}),
   },
 
   Author: {
-    bookCount: (root) => {
-      const count = books.filter((books) => books.author === root.name).length
+    bookCount: async (root) => {
+      const books = await Book.find({ author: root._id })
+      const count = books.length
 
       return count
     },
