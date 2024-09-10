@@ -178,19 +178,13 @@ const resolvers = {
       }
     },
 
-    editAuthor: (root, args) => {
-      const foundAuthor = authors.find((author) => author.name === args.name)
-
-      if (!foundAuthor) {
-        return null
-      } else {
-        const editedAuthor = { ...foundAuthor, born: args.setBornTo }
-        authors = authors.map((author) =>
-          author.name === args.name ? editedAuthor : author
-        )
-
-        return editedAuthor
-      }
+    editAuthor: async (root, args) => {
+      const editedAuthor = await Author.findOneAndUpdate(
+        { name: args.name },
+        { born: args.setBornTo },
+        { new: true }
+      )
+      return editedAuthor
     },
   },
   Query: {
