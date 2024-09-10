@@ -6,7 +6,6 @@ const Author = require('./models/Author')
 require('dotenv').config()
 const { ApolloServer } = require('@apollo/server')
 const { startStandaloneServer } = require('@apollo/server/standalone')
-const { v1: uuid } = require('uuid')
 const { GraphQLError } = require('graphql')
 
 const MONGODB_URI = process.env.MONGODB_URI
@@ -167,7 +166,7 @@ const resolvers = {
         }
         const book = new Book({ ...args, author: foundAuthor._id })
         const createdBook = await book.save()
-        return createdBook
+        return createdBook.populate('author')
       } catch (error) {
         throw new GraphQLError('Creating the book failed', {
           extensions: {
