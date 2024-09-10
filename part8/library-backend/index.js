@@ -165,10 +165,7 @@ const resolvers = {
     },
   },
   Query: {
-    me: (root, args, { currentUser }) => {
-      console.log(currentUser)
-      return currentUser
-    },
+    me: (root, args, { currentUser }) => currentUser,
     bookCount: async () => Book.collection.countDocuments(),
     authorCount: async () => Author.collection.countDocuments(),
     allBooks: async (root, args) => {
