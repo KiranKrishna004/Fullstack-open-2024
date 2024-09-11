@@ -32,3 +32,13 @@ export const ALL_GENRES = gql`
     }
   }
 `
+
+export const GET_USER = gql`
+  query getMe {
+    me {
+      username
+      favoriteGenre
+      id
+    }
+  }
+`
