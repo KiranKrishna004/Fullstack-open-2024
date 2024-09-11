@@ -2,17 +2,13 @@ import { useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { ADD_BOOK } from '../mutations'
 
-const NewBook = ({ show }) => {
-  const [createNewBook, { data }] = useMutation(ADD_BOOK)
+const NewBook = () => {
+  const [createNewBook] = useMutation(ADD_BOOK)
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [published, setPublished] = useState('')
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
-
-  if (!show) {
-    return null
-  }
 
   const submit = async (event) => {
     event.preventDefault()

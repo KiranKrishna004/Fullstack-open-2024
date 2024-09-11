@@ -3,7 +3,7 @@ import { ALL_AUTHORS } from '../queries'
 import { useState } from 'react'
 import { EDIT_BIRTH } from '../mutations'
 
-const Authors = ({ show }) => {
+const Authors = () => {
   const { data: authors, isLoading } = useQuery(ALL_AUTHORS)
   const [updateAuthorBirth] = useMutation(EDIT_BIRTH, {
     refetchQueries: [{ query: ALL_AUTHORS }],
@@ -21,9 +21,6 @@ const Authors = ({ show }) => {
     })
   }
 
-  if (!show) {
-    return null
-  }
   if (isLoading) {
     return <div>Loading....</div>
   }
